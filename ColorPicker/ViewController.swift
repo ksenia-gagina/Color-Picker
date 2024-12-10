@@ -7,13 +7,23 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    // Do any additional setup after loading the view.
-  }
-
-
+final class ViewController: UIViewController {
+  
+  // MARK: - Private properties
+  
+  private let screenWithFinalColorView = UIView()
+  
+  private let sliderRed = UISlider()
+  private let labelRed = UILabel()
+  private let textFieldRed = UITextField()
+  
+  private let sliderGreen = UISlider()
+  private let labelGreen = UILabel()
+  private let textFieldGreen = UITextField()
+  
+  private let sliderBlue = UISlider()
+  private let labelBlue = UILabel()
+  private let textFieldBlue = UITextField()
+  
 }
 
