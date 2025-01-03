@@ -2,15 +2,15 @@
 //  MainScreenView.swift
 //  ColorPicker
 //
-//  Created by Ксения Гагина on 18.12.2024.
+//  Created by Ксения Гагина on 10.12.2024.
 //
 
 import UIKit
 
 final class MainScreenView: UIView, UITextFieldDelegate {
-  
-  // MARK: - Init
 
+  // MARK: - Init
+  
   override init(frame: CGRect) {
     super.init(frame: frame)
     
@@ -24,9 +24,30 @@ final class MainScreenView: UIView, UITextFieldDelegate {
   
   // MARK: - Internal propertes
   
-  var textField: (() -> Void)?
+  var textFieldChange: ((UITextField, NSRange, String) -> Bool)?
   
-  // MARK: - Private properties
+  //MARK: - Internal funcs
+  
+  func textFieldDidEndEditing(_ textField: UITextField) {
+    if let redValue = Int(textFieldRed.text ?? ""),
+       let greenValue = Int(textFieldGreen.text ?? ""),
+       let blueValue = Int(textFieldBlue.text ?? ""),
+       redValue <= 255, greenValue <= 255, blueValue <= 255 {
+      sliderRed.value = Float(redValue)
+      sliderGreen.value = Float(greenValue)
+      sliderBlue.value = Float(blueValue)
+      sliderValueChanged()
+    }
+  }
+  
+//  func textFieldApp() {
+//    if let text = textFieldRed.text {
+//      let range = NSRange(location:0, length: text.count)
+//      textFieldChange?(textFieldRed, range, text)
+//    }
+//  }
+  
+  // MARK: - Private propertes
   
   private let screenWithFinalColorView = UIView()
   
@@ -147,8 +168,8 @@ private extension MainScreenView {
     [textFieldRed, textFieldGreen, textFieldBlue].forEach {
       $0.borderStyle = .roundedRect
       $0.delegate = self
-      $0.addTarget(self, action: #selector(textFieldActivate), for: .allEditingEvents)
     }
+    
     
     CommonStackWithFunctionality.axis = .horizontal
     CommonStackWithFunctionality.spacing = Constants.commonStackWithFunctionalitySpacing
@@ -156,15 +177,15 @@ private extension MainScreenView {
     CommonStackWithFunctionality.distribution = .fill
     
     [sliderRed,sliderGreen, sliderBlue].forEach {
-      $0.minimumValue = Float(Constants.minimumValue)
-      $0.maximumValue = Float(Constants.maximumValue)
+      $0.minimumValue = Float(Int(Constants.minimumValue))
+      $0.maximumValue = Float(Int(Constants.maximumValue))
       $0.value = Float(Constants.minimumValue)
       $0.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
     }
   }
-  
-  @objc
-  func sliderValueChanged(_ sender: UISlider) {
+
+@objc
+  private func sliderValueChanged() {
     let redValue = CGFloat(sliderRed.value) / Constants.maximumValue
     let greenValue = CGFloat(sliderGreen.value) / Constants.maximumValue
     let blueValue = CGFloat(sliderBlue.value) / Constants.maximumValue
@@ -178,17 +199,13 @@ private extension MainScreenView {
     self.labelRed.text = String(Int(redValue * Constants.maximumValue))
     self.labelGreen.text = String (Int(greenValue * Constants.maximumValue))
     self.labelBlue.text = String (Int(blueValue * Constants.maximumValue))
-    
+
     self.textFieldRed.text = String(Int(redValue * Constants.maximumValue))
     self.textFieldGreen.text = String (Int(greenValue * Constants.maximumValue))
     self.textFieldBlue.text = String (Int(blueValue * Constants.maximumValue))
-  }
-  
-  @objc
-  func textFieldActivate (_ sender: UITextField) {
-    textField?()
-  }
-}
+    }
+      }
+
 
 //MARK: - Constants
 
