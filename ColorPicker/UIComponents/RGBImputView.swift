@@ -29,7 +29,7 @@ public final class RGBImputView: UITextField {
   // MARK: - Public funcs
   
   public func setRGB(value: Int) {
-    guard value >= 0 && value <= 255 else { return }
+    guard value >= Constants.minimumValue && value <= Constants.maximumValue else { return }
     text = String(value)
   }
 }
@@ -52,9 +52,9 @@ extension RGBImputView: UITextFieldDelegate {
     let updatedText = currentText.replacingCharacters(in: textRange, with: string)
     
     if updatedText.isEmpty {
-      textFieldChange?(0)
+      textFieldChange?(Constants.minimumValue)
       return true
-    } else if let rgbValue = Int(updatedText), rgbValue >= 0 && rgbValue <= 255 {
+    } else if let rgbValue = Int(updatedText), rgbValue >= Constants.minimumValue && rgbValue <= Constants.maximumValue {
       textFieldChange?(rgbValue)
       return true
     } else {
@@ -68,8 +68,8 @@ extension RGBImputView: UITextFieldDelegate {
 private extension RGBImputView {
   func setLayout() {
     NSLayoutConstraint.activate([
-      self.heightAnchor.constraint(equalToConstant: 32),
-      self.widthAnchor.constraint(equalToConstant: 52)
+      self.heightAnchor.constraint(equalToConstant: Constants.imputHeight),
+      self.widthAnchor.constraint(equalToConstant: Constants.imputWidth)
     ])
   }
   
@@ -78,5 +78,14 @@ private extension RGBImputView {
     backgroundColor = .white
     delegate = self
   }
+}
+
+//MARK: - Constants
+
+private enum Constants {
+  static let minimumValue: Int = 0
+  static let maximumValue: Int = 255
+  static let imputHeight: CGFloat = 32
+  static let imputWidth: CGFloat = 52
 }
 

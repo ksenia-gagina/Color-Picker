@@ -53,5 +53,4 @@ private enum Constants {
   static let maximumValue: Int = 255
   static let alphaComponentBackgroundColor: CGFloat = 0.4
   static let rgbDispleyCornerRadius: CGFloat = 45
-  
 }

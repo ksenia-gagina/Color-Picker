@@ -24,4 +24,3 @@ final class MainScreenViewController: UIViewController {
     super.viewDidLoad()
   }
 }
-
