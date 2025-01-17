@@ -12,6 +12,7 @@ public final class RGBImputView: UITextField {
   // MARK: - Public properties
   
   public var textFieldChange: ((Int) -> Void)?
+  public var currentText: Int = 127
   
   // MARK: - Init
   
@@ -52,7 +53,7 @@ extension RGBImputView: UITextFieldDelegate {
     let updatedText = currentText.replacingCharacters(in: textRange, with: string)
     
     if updatedText.isEmpty {
-      textFieldChange?(Constants.minimumValue)
+      textFieldChange?(Constants.defaultValue)
       return true
     } else if let rgbValue = Int(updatedText), rgbValue >= Constants.minimumValue && rgbValue <= Constants.maximumValue {
       textFieldChange?(rgbValue)
@@ -87,5 +88,6 @@ private enum Constants {
   static let maximumValue: Int = 255
   static let imputHeight: CGFloat = 32
   static let imputWidth: CGFloat = 52
+  static let defaultValue: Int = 127
 }
 

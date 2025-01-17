@@ -41,7 +41,7 @@ public final class RGBDispleyView: UIView {
 
 private extension RGBDispleyView {
   func initial() {
-    backgroundColor = .white
+    setColor(redValue: Constants.defaultValue, greenValue: Constants.defaultValue, blueValue: Constants.defaultValue)
     layer.cornerRadius = Constants.rgbDispleyCornerRadius
   }
 }
@@ -53,4 +53,5 @@ private enum Constants {
   static let maximumValue: Int = 255
   static let alphaComponentBackgroundColor: CGFloat = 0.4
   static let rgbDispleyCornerRadius: CGFloat = 45
+  static let defaultValue: Int = 127
 }

@@ -36,14 +36,14 @@ public final class RGBSliderView: UISlider {
 
 private extension RGBSliderView {
   func initial() {
-    minimumValue = Float(Int(Constants.minimumValue))
-    maximumValue = Float(Int(Constants.maximumValue))
-    value = Float(Constants.minimumValue)
+    minimumValue = Float(Constants.minimumValue)
+    maximumValue = Float(Constants.maximumValue)
+    value = Float(Constants.defaultValue)
     addTarget(self, action: #selector(sliderValueChangedAction), for: .valueChanged)
   }
   
   @objc
-  private func sliderValueChangedAction() {
+  func sliderValueChangedAction() {
     sliderValueChanged?(value)
   }
 }
@@ -53,4 +53,5 @@ private extension RGBSliderView {
 private enum Constants {
   static let minimumValue: CGFloat = 0
   static let maximumValue: CGFloat = 255
+  static let defaultValue: CGFloat = 127
 }

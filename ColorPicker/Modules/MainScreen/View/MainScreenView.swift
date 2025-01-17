@@ -11,9 +11,9 @@ final class MainScreenView: UIView {
   
   // MARK: - Private propertes
   
-  private let screenWithFinalColorView = RGBDispleyView()
+  private let rgbDispleyView = RGBDispleyView()
   
-  private let rgbDispleyView = UIStackView()
+  private let verticalStackLabel = UIStackView()
   private let redLabel = UILabel()
   private let greenLabel = UILabel()
   private let blueLabel = UILabel()
@@ -52,14 +52,14 @@ final class MainScreenView: UIView {
 
 private extension MainScreenView {
   func settingLayout() {
-    [screenWithFinalColorView, mainStackView].forEach {
+    [rgbDispleyView, mainStackView].forEach {
       $0.translatesAutoresizingMaskIntoConstraints = false
       addSubview($0)
     }
     
     [redLabel, greenLabel, blueLabel].forEach {
       $0.translatesAutoresizingMaskIntoConstraints = false
-      rgbDispleyView.addArrangedSubview($0)
+      verticalStackLabel.addArrangedSubview($0)
     }
     
     [redSlider, greenSlider, blueSlider].forEach {
@@ -72,31 +72,31 @@ private extension MainScreenView {
       verticalStackInputView.addArrangedSubview($0)
     }
     
-    [ rgbDispleyView, verticalStackSlider, verticalStackInputView].forEach {
+    [verticalStackLabel, verticalStackSlider, verticalStackInputView].forEach {
       $0.translatesAutoresizingMaskIntoConstraints = false
       mainStackView.addArrangedSubview($0)
     }
     
     NSLayoutConstraint.activate(
       [
-        screenWithFinalColorView.heightAnchor.constraint(
+        rgbDispleyView.heightAnchor.constraint(
           equalToConstant: Constants.screenWithFinalColorViewHeight
         ),
-        screenWithFinalColorView.leadingAnchor.constraint(
+        rgbDispleyView.leadingAnchor.constraint(
           equalTo: leadingAnchor,
           constant: Constants.screenWithFinalColorViewLeadingTrailingConstant
         ),
-        screenWithFinalColorView.trailingAnchor.constraint(
+        rgbDispleyView.trailingAnchor.constraint(
           equalTo: trailingAnchor,
           constant: -Constants.screenWithFinalColorViewLeadingTrailingConstant
         ),
-        screenWithFinalColorView.topAnchor.constraint(
+        rgbDispleyView.topAnchor.constraint(
           equalTo: topAnchor,
           constant: Constants.screenWithFinalColorViewTop
         ),
         
         mainStackView.topAnchor.constraint(
-          equalTo: screenWithFinalColorView.bottomAnchor,
+          equalTo: rgbDispleyView.bottomAnchor,
           constant: Constants.commonStackWithFunctionalityTop
         ),
         mainStackView.leadingAnchor.constraint(
@@ -112,10 +112,10 @@ private extension MainScreenView {
           constant: -Constants.commonStackWithFunctionalityBottom
         ),
         
-        rgbDispleyView.widthAnchor.constraint(
+        verticalStackLabel.widthAnchor.constraint(
           equalToConstant: Constants.rgbDispleyViewWidth
         ),
-        rgbDispleyView.heightAnchor.constraint(
+        verticalStackLabel.heightAnchor.constraint(
           equalToConstant: Constants.rgbDispleyViewHeight
         )
       ]
@@ -123,18 +123,23 @@ private extension MainScreenView {
   }
   
   func settingStyle() {
-    screenWithFinalColorView.layer.borderWidth = Constants.screenWithFinalColorViewBorderWidth
-    screenWithFinalColorView.layer.borderColor = UIColor.black.cgColor
+    rgbDispleyView.layer.borderWidth = Constants.screenWithFinalColorViewBorderWidth
+    rgbDispleyView.layer.borderColor = UIColor.black.cgColor
     
-    rgbDispleyView.axis = .vertical
-    rgbDispleyView.spacing = Constants.verticalStackLabelTextFieldSpacing
-    rgbDispleyView.alignment = .leading
+    verticalStackLabel.axis = .vertical
+    verticalStackLabel.spacing = Constants.verticalStackLabelTextFieldSpacing
+    verticalStackLabel.alignment = .leading
     
-    redLabel.text = "\(redSlider.value)"
+    let defaultValue = 127
+    redSlider.value = Float(defaultValue)
+    greenSlider.value = Float(defaultValue)
+    blueSlider.value = Float(defaultValue)
+    
+    redLabel.text = "\(defaultValue)"
     redLabel.textAlignment = .center
-    greenLabel.text = "\(greenSlider.value)"
+    greenLabel.text = "\(defaultValue)"
     greenLabel.textAlignment = .center
-    blueLabel.text = "\(blueSlider.value)"
+    blueLabel.text = "\(defaultValue)"
     blueLabel.textAlignment = .center
     
     verticalStackSlider.axis = .vertical
@@ -155,30 +160,59 @@ private extension MainScreenView {
     mainStackView.alignment = .center
     mainStackView.distribution = .fill
     
+    redInputView.setRGB(value: defaultValue)
+    greenInputView.setRGB(value: defaultValue)
+    blueInputView.setRGB(value: defaultValue)
+    
+    
     setupSlidersAndInputs(redSlider, redLabel, redInputView, .red)
     setupSlidersAndInputs(greenSlider, greenLabel, greenInputView, .green)
     setupSlidersAndInputs(blueSlider, blueLabel, blueInputView, .blue)
+    
+    updateBackgroundAndScreen()
+
   }
   
   func setupSlidersAndInputs(_ slider: RGBSliderView, _ label: UILabel, _ inputView: RGBImputView, _ color: UIColor) {
+    configureSlider(slider, color: color)
+    bindSlider(slider, label: label, inputView: inputView)
+    bindInputView(inputView, slider: slider, label: label)
+  }
+  
+  private func configureSlider(_ slider: RGBSliderView, color: UIColor) {
     slider.tintColor = color
-    
+  }
+  
+  private func bindSlider(_ slider: RGBSliderView, label: UILabel, inputView: RGBImputView) {
     slider.sliderValueChanged = { [weak self] _ in
       guard let self else { return }
-      let value = Int(slider.value)
-      label.text = "\(value)"
-      inputView.setRGB(value: value)
-      setBackgroundColor()
-      rgbScreenView()
+      self.updateUIForSliderChange(slider, label: label, inputView: inputView)
     }
-    
+  }
+  
+  private func bindInputView(_ inputView: RGBImputView, slider: RGBSliderView, label: UILabel) {
     inputView.textFieldChange = { [weak self] value in
       guard let self else { return }
-      slider.value = Float(value)
-      label.text = "\(value)"
-      setBackgroundColor()
-      rgbScreenView()
+      self.updateUIForInputChange(inputView, slider: slider, label: label, value: value)
     }
+  }
+  
+  private func updateUIForSliderChange(_ slider: RGBSliderView, label: UILabel, inputView: RGBImputView) {
+    let value = Int(slider.value)
+    label.text = "\(value)"
+    inputView.setRGB(value: value)
+    updateBackgroundAndScreen()
+  }
+  
+  private func updateUIForInputChange(_ inputView: RGBImputView, slider: RGBSliderView, label: UILabel, value: Int) {
+    slider.value = Float(value)
+    label.text = "\(value)"
+    updateBackgroundAndScreen()
+  }
+  
+  private func updateBackgroundAndScreen() {
+    setBackgroundColor()
+    rgbScreenView()
   }
   
   func setBackgroundColor() {
@@ -189,7 +223,7 @@ private extension MainScreenView {
     if redValue == Constants.minimumValue && greenValue == Constants.minimumValue && blueValue == Constants.minimumValue {
       self.backgroundColor = .gray
       backgroundColor = .gray.withAlphaComponent(Constants.alphaComponentBackgroundColor)
-      screenWithFinalColorView.tintColor = .black
+      rgbDispleyView.tintColor = .black
     } else {
       guard redValue >= Constants.minimumValue && redValue <= Constants.maximumValue else { return }
       guard greenValue >= Constants.minimumValue  && greenValue <= Constants.maximumValue  else { return }
@@ -205,7 +239,7 @@ private extension MainScreenView {
   }
   
   func rgbScreenView() {
-    screenWithFinalColorView.setColor (
+    rgbDispleyView.setColor (
       redValue: Int(redSlider.value),
       greenValue: Int(greenSlider.value),
       blueValue: Int(blueSlider.value)
