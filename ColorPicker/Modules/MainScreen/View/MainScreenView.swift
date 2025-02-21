@@ -163,8 +163,7 @@ private extension MainScreenView {
     redInputView.setRGB(value: defaultValue)
     greenInputView.setRGB(value: defaultValue)
     blueInputView.setRGB(value: defaultValue)
-    
-    
+        
     setupSlidersAndInputs(redSlider, redLabel, redInputView, .red)
     setupSlidersAndInputs(greenSlider, greenLabel, greenInputView, .green)
     setupSlidersAndInputs(blueSlider, blueLabel, blueInputView, .blue)
@@ -239,7 +238,7 @@ private extension MainScreenView {
   }
   
   func rgbScreenView() {
-    rgbDispleyView.setColor (
+    rgbDispleyView.setColor(
       redValue: Int(redSlider.value),
       greenValue: Int(greenSlider.value),
       blueValue: Int(blueSlider.value)
@@ -247,7 +246,7 @@ private extension MainScreenView {
   }
 }
 
-//MARK: - Constants
+// MARK: - Constants
 
 private enum Constants {
   static let screenWithFinalColorViewHeight: CGFloat = 120

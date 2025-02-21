@@ -48,7 +48,7 @@ private extension RGBSliderView {
   }
 }
 
-//MARK: - Constants
+// MARK: - Constants
 
 private enum Constants {
   static let minimumValue: CGFloat = 0

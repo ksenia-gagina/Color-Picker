@@ -46,7 +46,7 @@ private extension RGBDispleyView {
   }
 }
 
-//MARK: - Constants
+// MARK: - Constants
 
 private enum Constants {
   static let minimumValue: Int = 0

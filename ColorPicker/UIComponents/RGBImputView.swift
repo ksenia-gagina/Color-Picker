@@ -35,7 +35,7 @@ public final class RGBImputView: UITextField {
   }
 }
 
-//MARK: - UITextFieldDelegate
+// MARK: - UITextFieldDelegate
 
 extension RGBImputView: UITextFieldDelegate {
   public func textField(
@@ -81,7 +81,7 @@ private extension RGBImputView {
   }
 }
 
-//MARK: - Constants
+// MARK: - Constants
 
 private enum Constants {
   static let minimumValue: Int = 0
@@ -90,4 +90,3 @@ private enum Constants {
   static let imputWidth: CGFloat = 52
   static let defaultValue: Int = 127
 }
-
